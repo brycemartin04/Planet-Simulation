@@ -3,8 +3,9 @@
 #include "Planet.hpp"
 #include <vector>
 
-const float TIME_STEP = 1.0f; // Time step for prediction (in seconds)
-const int NUM_POINTS = 200;   // Number of points to predict in the orbit
+const float SCALE_DISTANCE = 1e-9f; // Reduced scale for distance
+const float SCALE_VELOCITY = 1e-4f;    // Scale for velocity (e.g., in m/s to pixels/frame)
+const float SCALE_MASS = 1e-28f;            // Scale for mass (e.g., in kg to scaled units)
 
 int main() {
     const int width = 720;
@@ -12,9 +13,9 @@ int main() {
 
     std::vector<Planet> planets;
 
-    Planet sun(width / 2.0f, height / 2.0f, 100.0f, 5000.0f, { 0.0f, 0.0f }, sf::Color::Yellow);
-    Planet earth(width / 2.0f + 200.f, height / 2.0f + 0.f, 10.0f, 15.0f, { 0.0f, 33.0f }, sf::Color::Blue);
-    Planet moon(width / 2.0f + 215.f, height / 2.0f + 0.f, 1.0f, 5.0f, { 0.0f, 41.0f }, sf::Color::White);
+    Planet sun(width / 2.0f, height / 2.0f, 50.0f, 1.989e30f * SCALE_MASS, { 0.0f, 0.0f }, sf::Color::Yellow);
+    Planet earth(width / 2.0f + (1.496e11f * SCALE_DISTANCE), height / 2.0f, 10.0f, 5.972e24f * SCALE_MASS, { 0.0f, 29.783f * SCALE_VELOCITY }, sf::Color::Blue);
+    Planet moon(width / 2.0f + (3.844e8f * SCALE_DISTANCE), height / 2.0f, 1.0f, 7.34767309e22f * SCALE_MASS, { 0.0f, 1.022f * SCALE_VELOCITY }, sf::Color::White);
 
     planets.push_back(sun);
     planets.push_back(earth);
@@ -44,6 +45,9 @@ int main() {
         }
 
         for (auto& planet : planets){
+            for (auto& trailDot : planet.getTrail()) {
+                window->draw(trailDot);  // Draw the trail
+            }
             window -> draw(planet.getObject());
             planet.updatePosition();
         }

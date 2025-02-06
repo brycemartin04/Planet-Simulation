@@ -1,7 +1,9 @@
 #include <SFML/Graphics.hpp>
+#include <vector>
 
 class Planet {
     private:
+        std::vector<sf::CircleShape> trail;
         sf::CircleShape object;
         float mass;
         sf::Vector2f velocity;
@@ -15,6 +17,7 @@ public:
 
     sf::Vector2f getPosition();
     sf::Vector2f getVelocity();
+    std::vector<sf::CircleShape> getTrail();
     float getMass();
     sf::CircleShape& getObject();
 

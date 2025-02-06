@@ -1,8 +1,8 @@
 #include "Planet.hpp"
 #include <SFML/Graphics.hpp>
 
-const float G = 50.f;  // Gravitational constant (scaled for simulation)
-const float TIME_STEP = 0.1f;  // Simulation time step
+const float G = 1e-5f;  // Gravitational constant (scaled for simulation)
+const float TIME_STEP = 1000.f;  // Simulation time step
 
 Planet::Planet(float x, float y, float radius, float initialMass, sf::Vector2f initialVelocity, sf::Color color){
     velocity = initialVelocity;
@@ -31,6 +31,16 @@ void Planet::applyGravity(Planet& other) {
 }
 
 void Planet::updatePosition(){
+    sf::CircleShape t(1); // Trail dot
+    t.setPosition(object.getPosition());
+    t.setPointCount(4);
+    t.setFillColor(sf::Color(255, 255, 255, 100)); // Semi-transparent white
+    trail.push_back(t);
+
+    // Remove old trail points to keep the trail length manageable
+    if (trail.size() > 200) {
+        trail.erase(trail.begin());
+    }
     object.move(velocity * TIME_STEP);
 }
 
@@ -47,3 +57,7 @@ float Planet::getMass(){
 sf::CircleShape& Planet::getObject(){
     return object;
 }
+
+std::vector<sf::CircleShape> Planet::getTrail(){
+     return trail; 
+     }
